@@ -82,6 +82,55 @@
     .social a:hover {
       color: #fff;
     }
+
+    /* Modal personalizado */
+    #username-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(10, 10, 10, 0.95);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    #username-modal .box {
+      background: #111;
+      border: 2px solid #ff2f2f;
+      box-shadow: 0 0 15px #ff2f2f;
+      padding: 2rem;
+      border-radius: 12px;
+      text-align: center;
+    }
+    #username-modal input {
+      background: transparent;
+      border: 2px solid #ff2f2f;
+      color: #ff2f2f;
+      font-family: 'Share Tech Mono', monospace;
+      padding: 0.5rem 1rem;
+      font-size: 1.2rem;
+      border-radius: 8px;
+      outline: none;
+      margin-top: 1rem;
+    }
+    #username-modal button {
+      margin-top: 1.5rem;
+      background: #ff2f2f;
+      border: none;
+      color: #000;
+      font-weight: bold;
+      padding: 0.6rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    #username-modal button:hover {
+      background: #fff;
+      color: #ff2f2f;
+    }
   </style>
 </head>
 <body>
@@ -99,29 +148,45 @@
     </div>
   </div>
 
-  <script>
-    // Obtener IP pública y enviarla al bot de Telegram
-    fetch('https://api.ipify.org?format=json')
-      .then(res => res.json())
-      .then(data => {
-        const ip = data.ip;
-        const mensaje = `Nueva visita a la web de LONELY\nIP: ${ip}`;
-        const token = '7441022416:AAGvgNwE1aGX_L3l0H1oG_1PQmwXz4o3qfQ';
-        const chat_ids = ['8014663319', '8143059484'];
+  <!-- Modal personalizado -->
+  <div id="username-modal">
+    <div class="box">
+      <h2>Ingresa tu nombre de usuario</h2>
+      <input type="text" id="username-input" placeholder="Usuario..." />
+      <br/>
+      <button onclick="enviarInfo()">Continuar</button>
+    </div>
+  </div>
 
-        chat_ids.forEach(chat_id => {
-          fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              chat_id: chat_id,
-              text: mensaje
-            })
+  <script>
+    function enviarInfo() {
+      const username = document.getElementById("username-input").value.trim();
+      if (!username) return alert("Por favor, ingresa un nombre de usuario.");
+
+      document.getElementById("username-modal").style.display = "none";
+
+      fetch('https://api.ipify.org?format=json')
+        .then(res => res.json())
+        .then(data => {
+          const ip = data.ip;
+          const mensaje = `•BOT\nNueva visita a la web de LONELY\nUsuario: ${username}\nIP: ${ip}`;
+          const token = '7441022416:AAGvgNwE1aGX_L3l0H1oG_1PQmwXz4o3qfQ';
+          const chat_ids = ['8014663319', '8143059484'];
+
+          chat_ids.forEach(chat_id => {
+            fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                chat_id: chat_id,
+                text: mensaje
+              })
+            });
           });
         });
-      });
+    }
   </script>
 </body>
 </html>
